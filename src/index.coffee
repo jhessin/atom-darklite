@@ -1,47 +1,42 @@
 ###* @babel ###
 
-###
 
-oooo     oooo           o888
- 88   88  88 ooooooooo8  888   ooooooo     ooooooo  oo ooo oooo   ooooooooo8
-  88 888 88 888oooooo8   888 888     888 888     888 888 888 888 888oooooo8
-   888 888  888          888 888         888     888 888 888 888 888
-    8   8     88oooo888 o888o  88ooo888    88ooo88  o888o888o888o  88oooo888
-
-###
-
-import { CompositeDisposable } from 'atom'
+import { CompositeDisposable, Disposable } from 'atom'
 import figlet from 'figlet'
-import AtomDarkliteView from './view'
+import uri from './uri'
+import ActiveEditorInfoView from './ActiveEditorInfoView'
 
 export default AtomDarklite =
-  atomDarkliteView: null
-  modalPanel: null
   subscriptions: null
 
   activate: (state) ->
-    @atomDarkliteView = new AtomDarkliteView(state.atomDarkliteViewState)
-    @modalPanel = atom.workspace.addModalPanel
-      item: @atomDarkliteView.getElement()
-      visible: false
 
     # Events subscribed to in atom's system can be
     # easily cleaned up with a CompositeDisposable
-    @subscriptions = new CompositeDisposable()
+    @subscriptions = new CompositeDisposable(
+      atom.workspace.addOpener (req) ->
+        if req is uri
+          new ActiveEditorInfoView()
+    )
 
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace',
-      'atom-darklite:toggle': => @toggle()
+    'atom-darklite:convert': => @convert()
     @subscriptions.add atom.commands.add 'atom-workspace',
-      'atom-darklite:convert': => @convert()
+      'atom-darklite:toggle': => @toggle()
+
+    # Destroy any ActiveEditorInfoViews when the package is deactivated
+    new Disposable ->
+      atom.workspace.getPaneItems().forEach (item) ->
+        item.destroy() if item instanceof 'ActiveEditorInfoView'
 
   deactivate: ->
     @modalPanel.destroy()
     @subscriptions.dispose()
     @atomDarkliteView.destroy()
 
-  serialize: ->
-    atomDarkliteViewState: @atomDarkliteView.serialize()
+  deserializeActiveEditorInfoView: (serialized) ->
+    new ActiveEditorInfoView()
 
   convert: ->
     editor = atom.workspace.getActiveTextEditor()
@@ -54,12 +49,4 @@ export default AtomDarklite =
         editor?.insertText "\n#{art}\n"
 
   toggle: ->
-    console.log 'AtomDarklite was toggled!'
-
-    if @modalPanel.isVisible()
-      @modalPanel.hide()
-    else
-      editor = atom.workspace.getActiveTextEditor()
-      words = editor?.getText().split(/\s+/).length
-      @atomDarkliteView.setCount(words)
-      @modalPanel.show()
+    atom.workspace.toggle(uri)

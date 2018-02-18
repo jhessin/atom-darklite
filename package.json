@@ -2,13 +2,11 @@
   "name": "atom-darklite",
   "main": "./lib/index",
   "version": "0.0.0",
-  "description": "A single liteweight package for developing webpages with react and coffeescript",
-  "keywords": [
-    "react",
-    "coffeescript"
-  ],
+  "description":
+    "A single liteweight package for developing webpages with react and coffeescript",
+  "keywords": ["react", "coffeescript"],
   "activationCommands": {
-    "atom-workspace": "atom-darklite:convert"
+    "atom-workspace": ["atom-darklite:toggle", "atom-darklite:convert"]
   },
   "repository": "https://github.com/jhessin/atom-darklite",
   "scripts": {
@@ -23,5 +21,8 @@
     "atom": "^1.1.0",
     "coffeescript": "^2.2.1",
     "figlet": "^1.2.0"
+  },
+  "deserializers": {
+    "atom-darklite/ActiveEditorInfoView": "deserializeActiveEditorInfoView"
   }
 }
