@@ -1,6 +1,17 @@
 ###* @babel ###
 
+###
+
+oooo     oooo           o888
+ 88   88  88 ooooooooo8  888   ooooooo     ooooooo  oo ooo oooo   ooooooooo8
+  88 888 88 888oooooo8   888 888     888 888     888 888 888 888 888oooooo8
+   888 888  888          888 888         888     888 888 888 888 888
+    8   8     88oooo888 o888o  88ooo888    88ooo88  o888o888o888o  88oooo888
+
+###
+
 import { CompositeDisposable } from 'atom'
+import figlet from 'figlet'
 import AtomDarkliteView from './view'
 
 export default AtomDarklite =
@@ -21,6 +32,8 @@ export default AtomDarklite =
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace',
       'atom-darklite:toggle': => @toggle()
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'atom-darklite:convert': => @convert()
 
   deactivate: ->
     @modalPanel.destroy()
@@ -29,6 +42,16 @@ export default AtomDarklite =
 
   serialize: ->
     atomDarkliteViewState: @atomDarkliteView.serialize()
+
+  convert: ->
+    editor = atom.workspace.getActiveTextEditor()
+    selection = editor?.getSelectedText()
+    font = 'o8'
+    figlet selection, { font }, (error, art)->
+      if error
+        console.error error
+      else
+        editor?.insertText "\n#{art}\n"
 
   toggle: ->
     console.log 'AtomDarklite was toggled!'
