@@ -1,7 +1,7 @@
 {
   "name": "atom-darklite",
   "main": "./lib/index",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A single liteweight package for developing webpages with react and coffeescript",
   "keywords": [
     "react",
