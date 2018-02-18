@@ -1,9 +1,9 @@
 ###* @babel ###
 
-import AtomDarkliteView from './view'
 import { CompositeDisposable } from 'atom'
+import AtomDarkliteView from './view'
 
-export default class AtomDarklite
+export default AtomDarklite =
   atomDarkliteView: null
   modalPanel: null
   subscriptions: null
@@ -16,7 +16,7 @@ export default class AtomDarklite
 
     # Events subscribed to in atom's system can be
     # easily cleaned up with a CompositeDisposable
-    @subscriptions = new CompositeDisposable
+    @subscriptions = new CompositeDisposable()
 
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace',
