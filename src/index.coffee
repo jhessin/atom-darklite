@@ -1,9 +1,9 @@
 ###* @babel ###
 
-AtomDarkliteView = require './view'
-{ CompositeDisposable } = require 'atom'
+import AtomDarkliteView from './view'
+import { CompositeDisposable } from 'atom'
 
-module.exports = AtomDarklite =
+export default class AtomDarklite
   atomDarkliteView: null
   modalPanel: null
   subscriptions: null

@@ -1,7 +1,5 @@
 ###* @babel ###
-
-module.exports =
-class AtomDarkliteView
+export default class AtomDarkliteView
   constructor: (serializedState) ->
     # Create root element
     @element = document.createElement('div')

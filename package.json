@@ -10,8 +10,8 @@
   },
   "repository": "https://github.com/jhessin/atom-darklite",
   "scripts": {
-    "start": "coffee -o lib/ -cbw src/",
-    "prepublish": "coffee -o lib/ -cb src/"
+    "start": "coffee -o lib/ --no-header -cbw src/",
+    "prepublish": "coffee -o lib/ --no-header -cb src/"
   },
   "license": "GPL-3.0",
   "engines": {
