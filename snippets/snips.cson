@@ -65,3 +65,6 @@
         $1
       }
     """
+  babel:
+    prefix: '@babel'
+    body: '###* @babel ###'

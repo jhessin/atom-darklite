@@ -1,3 +1,5 @@
+###* @babel ###
+
 module.exports =
 class AtomDarkliteView
   constructor: (serializedState) ->

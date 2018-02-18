@@ -1,3 +1,5 @@
+###* @babel ###
+
 AtomDarkliteView = require './view'
 { CompositeDisposable } = require 'atom'
 

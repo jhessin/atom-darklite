@@ -9,7 +9,11 @@
     "atom-workspace": "atom-darklite:toggle"
   },
   "repository": "https://github.com/jhessin/atom-darklite",
-  "license": "gpl-3.0",
+  "scripts": {
+    "start": "coffee -o lib/ -cbw src/",
+    "prepublish": "coffee -o lib/ -cb src/"
+  },
+  "license": "GPL-3.0",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
