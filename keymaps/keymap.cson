@@ -1,0 +1,4 @@
+# TODO: 'unset' all keymaps
+
+'atom-workspace':
+  'cmd-;': 'atom-darklite:toggle'

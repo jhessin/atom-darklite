@@ -1,0 +1,67 @@
+'.source.coffee':
+  'eslint-disable':
+    'prefix': '_eslint'
+    'body': '### eslint-disable import/first ###\n'
+  'import':
+    'prefix': 'import'
+    'body': "import $2 from '$1'$3"
+  'Module.Exports':
+    'prefix': 'modex'
+    'body': 'module.exports = $1'
+  'export default':
+    'prefix': 'exportd'
+    'body': 'export default '
+  'export-all':
+    'prefix': 'export*'
+    'body': "export * from '$1'$2"
+  'export some':
+    'prefix': 'export'
+    'body': "export { $1 }$2"
+  'ObjectProperty':
+    'prefix': 'getset'
+    'body': """
+      Object.defineProperty ${1:object}.prototype, '${2:property}',
+        # coffeelint: disable=missing_fat_arrows
+        get: ->$3
+        set: (val) ->$4
+        # coffeelint: enable=missing_fat_arrows
+    """
+  'constructor':
+    'prefix': '_cns'
+    'body': """
+      constructor: (props) ->
+        super props
+        @state = {$1}
+    """
+  'componentWillMount':
+    'prefix': '_cwm'
+    'body': 'componentWillMount: ->\n  '
+  'componentDidMount':
+    'prefix': '_cdm'
+    'body': 'componentDidMount: ->\n  '
+  'componentWillReceiveProps':
+    'prefix': '_cwrp'
+    'body': 'componentWillReceiveProps: (nextProps) ->\n  '
+  'shouldComponentUpdate':
+    'prefix': '_scu'
+    'body': 'shouldComponentUpdate: (nextProps, nextState) ->\n  '
+  'componentWillUpdate':
+    'prefix': '_cwu'
+    'body': 'componentWillUpdate: (nextProps, nextState) ->\n  '
+  'componentDidUpdate':
+    'prefix': '_cdu'
+    'body': 'componentDidUpdate: (prevProps, prevState) ->\n  '
+  'componentWillUnmount':
+    'prefix': '_cwu'
+    'body': 'componentWillUnmount: ->\n  '
+  'componentDidCatch':
+    'prefix': '_cdc'
+    'body': 'componentDidCatch: (error, info) ->\n  '
+  'setState':
+    'prefix': '_state'
+    'body': """
+      @setState (prevState, props) -> {
+        prevState...
+        $1
+      }
+    """
