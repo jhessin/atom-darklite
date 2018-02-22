@@ -1,2 +1,2 @@
 ###* @babel ###
-export default 'atom://active-editor-info'
+export default 'atom://darklight-panel'
