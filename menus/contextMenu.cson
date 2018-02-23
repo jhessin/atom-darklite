@@ -8,14 +8,14 @@
       command: 'atom-darklite:toggle'
     }
   ]
-  'atom-workspace': [
-    {
-      label: 'Text'
-      submenu: [
-        {
-          label: 'Inspect Element'
-          command: 'core:inspect'
-        }
-      ]
-    }
-  ]
+  # 'atom-workspace': [
+  #   {
+  #     label: 'Text'
+  #     submenu: [
+  #       {
+  #         label: 'Inspect Element'
+  #         command: 'core:inspect'
+  #       }
+  #     ]
+  #   }
+  # ]

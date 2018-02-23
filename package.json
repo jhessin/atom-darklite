@@ -2,9 +2,11 @@
   "name": "atom-darklite",
   "main": "./lib/index",
   "version": "0.0.3",
-  "description":
-    "A single liteweight package for developing webpages with react and coffeescript",
-  "keywords": ["react", "coffeescript"],
+  "description": "A single liteweight package for developing webpages with react and coffeescript",
+  "keywords": [
+    "react",
+    "coffeescript"
+  ],
   "repository": "https://github.com/jhessin/atom-darklite",
   "scripts": {
     "start": "coffee -o lib/ --no-header -cbw src/",
@@ -17,7 +19,8 @@
   "dependencies": {
     "atom": "^1.1.0",
     "coffeescript": "^2.2.1",
-    "figlet": "^1.2.0"
+    "figlet": "^1.2.0",
+    "prettier": "^1.10.2"
   },
   "deserializers": {
     "atom-darklite/CoffeeTranspiler": "deserializeCoffeeTranspiler"

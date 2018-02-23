@@ -7,17 +7,23 @@ import CoffeeTranspiler from './CoffeeTranspiler'
 export default AtomDarklite =
   subscriptions: null
   config:
-    previewMode:
+    previewLocation:
       type: 'string'
-      default: 'Modal'
+      default: 'right'
       enum: [
         {
-          value: 'Modal',
-          description: 'Modal - Displays as a popup that disappears with esc'
+          value: 'left',
+          description: 'Left'
         }, {
-          value: 'Panel',
-          description: 'Panel - Display a panel that can be docked.'
-        }
+          value: 'right',
+          description: 'Right'
+        }, {
+          value: 'top',
+          description: 'Top'
+        }, {
+          value: 'bottom',
+          description: 'Bottom'
+        },
       ]
 
   activate: (state) ->

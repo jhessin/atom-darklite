@@ -1,40 +1,50 @@
 ###* @babel ###
 import uri from './uri'
 import { compile } from 'coffeescript'
+import { CompositeDisposable, Disposable } from 'atom'
+prettier = require 'prettier'
+# import { registerElement } from 'element-kit'
+#
+# Template = require('../templates/CodeView.html')
+#
+# Element = registerElement 'atom-darklite',
+#   createdCallback: ->
+#     @appendChild Template.clone()
+#     @rootTemplate = @querySelector 'template'
+#     @classList.add 'atom-darklite'
 
-export default class ActiveEditorInfoView
-  constructor: (serializedState) ->
-    # Create root element
-    @element = document.createElement('div')
-    @element.classList.add('atom-darklite')
+export default class CoffeeTranspiler
 
-    # Create message element
-    @message = message = document.createElement('div')
-    message.classList.add('message')
-    @element.appendChild message
+  constructor: ->
+    @element = document.createElement('atom-text-editor')
+    @editor = @element.getModel()
+    @editor.setGrammar atom.
+    grammars.grammarForScopeName('source.js')
+    # @element.classList.add 'atom-darklite'
 
     # Update Content -- CoffeeTranspiler
-    @subscriptions = []
-    @subscriptions[0] = atom.workspace.onDidChangeActiveTextEditor (@editor) =>
-      @subscriptions[1]?.dispose()
-      if not @editor? then return
+    @activeChangedDisposable =
+      new Disposable atom.workspace.onDidChangeActiveTextEditor (editor) =>
+        @activeEditorDisposable?.dispose()
+        if not editor? then return
+        @compileCoffee editor
+        @activeEditorDisposable = new Disposable editor.onDidChange =>
+          @compileCoffee editor
 
-      @subscriptions[1] = @editor.onDidChange =>
-        sectionsToCompile = []
+  compileCoffee: (editor) ->
+    if not editor? then return
+    scopes = editor.getRootScopeDescriptor().getScopesArray()
+    if @scopeIsCoffee(scopes)
+      section = editor.getText()
 
-        # if no selection, check scope for the whole file, then select all.
-        scopes = @editor.getRootScopeDescriptor().getScopesArray()
-        if @scopeIsCoffee(scopes)
-          section = @editor.getText()
-
-          try
-            compiledSection = compile section, @compilerOptions
-            if !compiledSection.trim()
-              message.innerText = '// There is nothing to compile'
-            else
-              @showResult compiledSection
-          catch error
-            @showError error
+      try
+        compiledSection = compile section, @compilerOptions
+        if !compiledSection.trim()
+          @message.innerText = '// There is nothing to compile'
+        else
+          @showResult prettier.format compiledSection
+      catch error
+        @showError error
 
   scopeIsCoffee: (scopes) ->
     checkScope = (scope)->
@@ -43,36 +53,21 @@ export default class ActiveEditorInfoView
     scopes.findIndex(checkScope) > -1
 
   showError: (error)->
-    @message.innerHTML = """
-      CoffeeScript Error!
-      <big>#{error.name}:#{error.message}</big>
-      #{error.code}
-    """
+    @editor?.setText("CoffeeScript Error!:\n#{error}")
 
   showResult: (content)->
-    contentElement = document.createElement('code')
-    contentElement.innerText = content
-    button = document.createElement('button')
-    button.innerText = 'Copy to clipboard'
-    button.addEventListener 'click', -> atom.clipboard.write content
-    @message.appendChild contentElement
-    @message.appendChild button
+    @editor?.setText(content)
 
-  # Returns an object that can be retrieved when package is activated
-  serialize: ->
-    deserializer: 'atom-darklite/CoffeeTranspiler'
-
-  # Tear down any state and detach
-  destroy: ->
-    @element.remove()
-    for sub in @subscriptions
-      sub.dispose()
-
-  getTitle: -> 'Coffee Transpiled'
+  getTitle: ->
+    (atom.workspace.getActiveTextEditor()?.getTitle() ? '') + '(preview)'
 
   getURI: -> uri
 
-  getDefaultLocation: -> 'bottom'
+  getElement: -> @element
 
-  getElement: ->
-    @element
+  getDefaultLocation: -> atom.config.get 'atom-darklite.previewLocation'
+
+  # Tear down any state and detach
+  destroy: ->
+    @activeChangedDisposable?.dispose()
+    @activeEditorDisposable?.dispose()
