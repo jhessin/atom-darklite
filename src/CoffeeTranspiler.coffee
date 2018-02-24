@@ -3,33 +3,32 @@ import uri from './uri'
 import { compile } from 'coffeescript'
 import { CompositeDisposable, Disposable } from 'atom'
 prettier = require 'prettier'
-# import { registerElement } from 'element-kit'
-#
-# Template = require('../templates/CodeView.html')
-#
-# Element = registerElement 'atom-darklite',
-#   createdCallback: ->
-#     @appendChild Template.clone()
-#     @rootTemplate = @querySelector 'template'
-#     @classList.add 'atom-darklite'
 
 export default class CoffeeTranspiler
 
   constructor: ->
-    @element = document.createElement('atom-text-editor')
-    @editor = @element.getModel()
+    @element = document.createElement('atom-panel')
+    @element.classList.add 'atom-darklite'
+
+    editor = document.createElement('atom-text-editor')
+
+    @editor = editor.getModel()
     @editor.setGrammar atom.
     grammars.grammarForScopeName('source.js')
-    # @element.classList.add 'atom-darklite'
+    @element.appendChild editor
 
     # Update Content -- CoffeeTranspiler
-    @activeChangedDisposable =
-      new Disposable atom.workspace.onDidChangeActiveTextEditor (editor) =>
-        @activeEditorDisposable?.dispose()
-        if not editor? then return
-        @compileCoffee editor
-        @activeEditorDisposable = new Disposable editor.onDidChange =>
-          @compileCoffee editor
+    @subscriptions = new CompositeDisposable()
+
+    @subscribe atom.workspace.getActiveTextEditor()
+
+  subscribe: (editor)=>
+    @subscriptions?.dispose()
+    if not editor? then return @clear
+    @compileCoffee editor
+    @subscriptions.add editor.onDidSave =>
+      @compileCoffee editor
+    @subscriptions.add atom.workspace.onDidChangeActiveTextEditor @subscribe
 
   compileCoffee: (editor) ->
     if not editor? then return
@@ -58,6 +57,10 @@ export default class CoffeeTranspiler
   showResult: (content)->
     @editor?.setText(content)
 
+  clear: ->
+    @element.write '# Open a coffeescript file to see the
+      compiled version here.'
+
   getTitle: ->
     (atom.workspace.getActiveTextEditor()?.getTitle() ? '') + '(preview)'
 
@@ -67,7 +70,9 @@ export default class CoffeeTranspiler
 
   getDefaultLocation: -> atom.config.get 'atom-darklite.previewLocation'
 
+  getAllowedLocations: ->
+    [ 'left', 'right', 'bottom' ]
+
   # Tear down any state and detach
   destroy: ->
-    @activeChangedDisposable?.dispose()
-    @activeEditorDisposable?.dispose()
+    @subscriptions?.dispose()

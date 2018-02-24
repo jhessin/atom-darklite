@@ -18,9 +18,6 @@ export default AtomDarklite =
           value: 'right',
           description: 'Right'
         }, {
-          value: 'top',
-          description: 'Top'
-        }, {
           value: 'bottom',
           description: 'Bottom'
         },
